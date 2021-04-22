@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use JWTAuth;
 
@@ -52,5 +53,38 @@ class UserController extends Controller
             'success' => true,
             'users' => $users
         ], Response::HTTP_OK);
+    }
+
+    public function getFiltered($name, $email){
+        $users = DB::table('users')->where([
+            ['name', 'LIKE', '%'.$name.'%'],
+            ['email', 'LIKE', '%'.$email.'%'],
+        ])->get(['id', 'name', 'email']);
+
+        return response()->json([
+            'success' => true,
+            'users' => $users
+        ], Response::HTTP_OK);
+    }
+
+    public function delete($id){
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, user with id ' . $id . ' cannot be found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($user->delete()) {
+            return response()->json([
+                'success' => true
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'User could not be deleted'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

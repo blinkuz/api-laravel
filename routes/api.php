@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('users', [UserController::class, 'getAll']);
-
+    Route::get('users/{name}/{email}', [UserController::class, 'getFiltered']);
+    Route::delete('users/{id}', [UserController::class, 'delete']);
 });
