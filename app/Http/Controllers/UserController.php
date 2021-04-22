@@ -10,22 +10,26 @@ use JWTAuth;
 
 class UserController extends Controller
 {
-    public function register(RegisterUserRequest $request)
-    {
+    public function register(RegisterUserRequest $request){
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->save();
 
-        return response()->json([
-            'success' => true,
-            'data' => $user
-        ], Response::HTTP_OK);
+        if ($user->save()) {
+            return response()->json([
+                'success' => true,
+                'product' => $user
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, user could not be register'
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
-    public function login(Request $request)
-    {
+    public function login(Request $request){
         $input = $request->only('email', 'password');
         $jwt_token = null;
 
@@ -33,12 +37,20 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid Email or Password',
-            ], Response::HTTP_UNAUTHORIZED);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         return response()->json([
             'success' => true,
             'token' => $jwt_token,
-        ]);
+        ], Response::HTTP_OK);
+    }
+
+    public function getAll(){
+        $users = User::All()->toArray();
+        return response()->json([
+            'success' => true,
+            'users' => $users
+        ], Response::HTTP_OK);
     }
 }
