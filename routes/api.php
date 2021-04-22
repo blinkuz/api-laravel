@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('register', 'UserController@register');
-Route::post('login', 'UserController@login');
-Route::get('/register', function () {
-    return view('welcome');
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('users', [UserController::class, 'getAll']);
+
 });
