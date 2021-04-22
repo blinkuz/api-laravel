@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,6 +87,35 @@ class UserController extends Controller
                 'success' => false,
                 'message' => 'User could not be deleted'
             ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function update(UpdateUserRequest $request, $id){
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, user with id ' . $id . ' cannot be found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $updated = $user->fill($request->all())->save();
+            if ($updated) {
+                return response()->json([
+                    'success' => true
+                ], Response::HTTP_OK);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User could not be updated'
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        } catch (QueryException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User could not be updated'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

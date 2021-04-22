@@ -21,4 +21,5 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('users', [UserController::class, 'getAll']);
     Route::get('users/{name}/{email}', [UserController::class, 'getFiltered']);
     Route::delete('users/{id}', [UserController::class, 'delete']);
+    Route::put('users/{id}', [UserController::class, 'update']);
 });
