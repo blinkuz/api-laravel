@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UpdatePwdController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
+Route::post('req-password-reset', [UpdatePwdController::class, 'reqForgotPassword']);
+Route::post('update-password', [UpdatePwdController::class, 'updatePassword']);
+
+// Test route for view passwordToken whiteout UI
+Route::get('view-token/{passwordToken}', [UpdatePwdController::class, 'viewExampleEmailToken']);
 
 Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('users', [UserController::class, 'getAll']);
