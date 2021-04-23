@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,8 @@ class UserController extends Controller
                 'message' => 'Invalid Email or Password',
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        DB::table('users')->where('email', $request->email)->update(['last_login_at' => Carbon::now()->toDateTimeString()]);
 
         return response()->json([
             'success' => true,

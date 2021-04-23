@@ -21,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'disabled',
     ];
 
     /**
@@ -33,7 +34,8 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'email_verified_at',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'last_login_at'
     ];
 
     /**
