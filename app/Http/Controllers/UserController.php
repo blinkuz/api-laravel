@@ -23,7 +23,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'product' => $user
-            ], Response::HTTP_OK);
+            ], Response::HTTP_CREATED);
         } else {
             return response()->json([
                 'success' => false,
